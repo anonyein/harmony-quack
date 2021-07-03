@@ -1,0 +1,42 @@
+apply plugin: 'com.huawei.ohos.library'
+//For instructions on signature configuration, see https://developer.harmonyos.com/cn/docs/documentation/doc-guides/ide_debug_device-0000001053822404#section1112183053510
+ohos {
+    compileSdkVersion 6
+    defaultConfig {
+        compatibleSdkVersion 4
+        externalNativeBuild {
+            path "src/main/jni/CMakeLists.txt"
+            abiFilters /*'armeabi-v7a', */ "arm64-v8a" //输出指定三种abi体系结构下的so库。
+            arguments '-DANDROID_TOOLCHAIN=clang', '-DANDROID_STL=c++_static'/*, '-DCMAKE_BUILD_TYPE=MinSizeRel'*/
+            cFlags '-std=c99', '-fstrict-aliasing', '-DDUK_USE_DEBUGGER_SUPPORT', '-DDUK_USE_INTERRUPT_COUNTER', '-DDUK_USE_DEBUGGER_INSPECT', '-DDUK_USE_DEBUGGER_THROW_NOTIFY', '-DDUK_USE_DEBUGGER_PAUSE_UNCAUGHT', '-DDUK_USE_DEBUGGER_DUMPHEAP', '-Werror', '-Wno-implicit-float-conversion', '-Wno-pointer-to-int-cast'/*, '-g0', '-Os', '-fomit-frame-pointer', '-DNDEBUG', '-fvisibility=hidden', '-Werror', '-v'*/
+            cppFlags '-std=c++11', '-fstrict-aliasing', '-fexceptions', '-Werror'/*, '-g0', '-Os', '-fomit-frame-pointer', '-DNDEBUG', '-fvisibility=hidden', '-Werror', '-v'*/
+        }
+    }
+
+    buildTypes {
+        debug {
+            proguardOpt {
+                proguardEnabled false
+                rulesFiles 'proguard-rules.pro'
+            }
+            externalNativeBuild {
+                arguments '-DCMAKE_BUILD_TYPE=MinSizeRel'
+                cFlags '-g0', '-Os', '-fomit-frame-pointer', '-DNDEBUG', '-fvisibility=hidden', '-Werror'
+                cppFlags '-g0', '-Os', '-fomit-frame-pointer', '-DNDEBUG', '-fvisibility=hidden', '-Werror'
+            }
+        }
+        /*debug {
+            externalNativeBuild {
+                cFlags '-g', '-DDEBUG', '-Werror'
+                cppFlags '-g', '-DDEBUG', '-Werror'
+            }
+        }*/
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    testImplementation 'junit:junit:4.13'
+    implementation 'org.jsoup:jsoup:1.13.1'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.0'
+}
